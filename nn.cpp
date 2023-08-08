@@ -43,7 +43,7 @@ void LinearLayer(float *A, float *B, float *C, float *D, int n, int k, int m) {
 
     const int gangs = 1024; // 執行組的數量
     const int vectorSize = 64; // 向量長度
-    #pragma acc data copyin(A[:n * k], B[:k * m], C[:m]) copyout(D[:n * m])
+    #pragma acc data present(A, B, C, D)
     #pragma acc parallel num_gangs(gangs) vector_length(vectorSize) loop collapse(2)
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -65,7 +65,7 @@ void LinearLayer(float *A, float *B, float *C, float *D, int n, int k, int m) {
 
 /* TODO: Parallel the for loops */
 void Sigmoid(float *A, int n, int m) {
-    #pragma acc data copy(A[:n * m])
+    #pragma acc data present(A)
     #pragma acc parallel loop collapse(2)
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -82,7 +82,7 @@ void Sigmoid(float *A, int n, int m) {
 
  /* TODO: Parallel the for loops */
 void Argmax(float *A, int *D, int n, int m) {
-    #pragma acc data copyin(A[:n * m]) copyout(D[:n])
+    #pragma acc data present(A, D)
     #pragma acc kernels loop independent
     for (int i = 0; i < n; i++) {
         float mx = A[i * m];
@@ -112,17 +112,29 @@ void my_nn(float *training_images_flat, int num_images,
            int *result) {
     float *layer1_output = new float[num_images * LAYER1];
     float *layer2_output = new float[num_images * LAYER2];
+    int n, k, m;
 
     // Layer1: Linear layer + Sigmoid (activation function)
-    LinearLayer(training_images_flat, layer1_matrix, layer1_bias, layer1_output,
-                num_images, LAYER0, LAYER1);
-    Sigmoid(layer1_output, num_images, LAYER1);
-
+    n = num_images;
+    k = LAYER0;
+    m = LAYER1;
+    #pragma acc data copyin(training_images_flat[:n*k], layer1_matrix[:k*m], layer1_bias[:m]) copyout(layer1_output[:n*m])
+    {
+        LinearLayer(training_images_flat, layer1_matrix, layer1_bias, layer1_output,
+                    num_images, LAYER0, LAYER1);
+        Sigmoid(layer1_output, num_images, LAYER1);
+    }
 
     // Layer2: Linear layer + Argmax
-    LinearLayer(layer1_output, layer2_matrix, layer2_bias, layer2_output,
-        num_images, LAYER1, LAYER2);
-    Argmax(layer2_output, result, num_images, LAYER2);
+    n = num_images;
+    k = LAYER1;
+    m = LAYER2;
+    #pragma acc data copyin(layer1_output[:n*k], layer2_matrix[:k*m], layer2_bias[:m], layer2_output[:n*m]) copyout(result[:n])
+    {
+        LinearLayer(layer1_output, layer2_matrix, layer2_bias, layer2_output,
+            num_images, LAYER1, LAYER2);
+        Argmax(layer2_output, result, num_images, LAYER2);
+    }
 
     delete [] layer1_output;
     delete [] layer2_output;
