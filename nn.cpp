@@ -41,7 +41,7 @@ using namespace std;
   */
 void LinearLayer(float *A, float *B, float *C, float *D, int n, int k, int m) {
 
-    const int gangs = 512; // 執行組的數量
+    const int gangs = 1024; // 執行組的數量
     const int vectorSize = 64; // 向量長度
     #pragma acc data copyin(A[:n * k], B[:k * m], C[:m]) copyout(D[:n * m])
     #pragma acc parallel num_gangs(gangs) vector_length(vectorSize) loop collapse(2)

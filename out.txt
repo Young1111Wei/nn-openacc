@@ -1,0 +1,60 @@
+CUDA initialized.
+Nbr of training images = 60000
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer1_matrix
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer1_bias
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer2_matrix
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer2_bias
+
+Inference accuracy: 97.8183%
+
+-----     STATS     -----
+Time for initializing CUDA device:     647 m.s.
+Time for reading MNIST data & weights: 166 m.s.
+Time for inferencing                 : 422 m.s.
+Time for calculating accuracy        : 14 m.s.
+----- END OF STATS  -----
+CUDA initialized.
+Nbr of training images = 60000
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer1_matrix
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer1_bias
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer2_matrix
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer2_bias
+
+Inference accuracy: 97.8183%
+
+-----     STATS     -----
+Time for initializing CUDA device:     683 m.s.
+Time for reading MNIST data & weights: 222 m.s.
+Time for inferencing                 : 495 m.s.
+Time for calculating accuracy        : 8 m.s.
+----- END OF STATS  -----
+CUDA initialized.
+Nbr of training images = 60000
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer1_matrix
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer1_bias
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer2_matrix
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer2_bias
+
+Inference accuracy: 97.8183%
+
+-----     STATS     -----
+Time for initializing CUDA device:     876 m.s.
+Time for reading MNIST data & weights: 397 m.s.
+Time for inferencing                 : 556 m.s.
+Time for calculating accuracy        : 10 m.s.
+----- END OF STATS  -----
+CUDA initialized.
+Nbr of training images = 60000
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer1_matrix
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer1_bias
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer2_matrix
+Reading file: /work/HPC_SCAMP/gpu_task/weights/layer2_bias
+
+Inference accuracy: 97.8183%
+
+-----     STATS     -----
+Time for initializing CUDA device:     761 m.s.
+Time for reading MNIST data & weights: 163 m.s.
+Time for inferencing                 : 458 m.s.
+Time for calculating accuracy        : 7 m.s.
+----- END OF STATS  -----
