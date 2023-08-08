@@ -112,13 +112,9 @@ void my_nn(float *training_images_flat, int num_images,
            int *result) {
     float *layer1_output = new float[num_images * LAYER1];
     float *layer2_output = new float[num_images * LAYER2];
-    int n, k, m;
 
     // Layer1: Linear layer + Sigmoid (activation function)
-    n = num_images;
-    k = LAYER0;
-    m = LAYER1;
-    #pragma acc data copyin(training_images_flat[:n*k], layer1_matrix[:k*m], layer1_bias[:m]) copyout(layer1_output[:n*m])
+    #pragma acc data copyin(training_images_flat[:num_images*LAYER0], layer1_matrix[:LAYER0*LAYER1], layer1_bias[:LAYER1]) copyout(layer1_output[:num_images*LAYER1])
     {
         LinearLayer(training_images_flat, layer1_matrix, layer1_bias, layer1_output,
                     num_images, LAYER0, LAYER1);
@@ -126,10 +122,7 @@ void my_nn(float *training_images_flat, int num_images,
     }
 
     // Layer2: Linear layer + Argmax
-    n = num_images;
-    k = LAYER1;
-    m = LAYER2;
-    #pragma acc data copyin(layer1_output[:n*k], layer2_matrix[:k*m], layer2_bias[:m], layer2_output[:n*m]) copyout(result[:n])
+    #pragma acc data copyin(layer1_output[:num_images*LAYER1], layer2_matrix[:LAYER1*LAYER2], layer2_bias[:LAYER2], layer2_output[:num_images*LAYER2]) copyout(result[:num_images])
     {
         LinearLayer(layer1_output, layer2_matrix, layer2_bias, layer2_output,
             num_images, LAYER1, LAYER2);
