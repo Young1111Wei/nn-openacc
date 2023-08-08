@@ -110,29 +110,24 @@ void Argmax(float *A, int *D, int n, int m) {
 void my_nn(float *training_images_flat, int num_images,
            float *layer1_matrix, float *layer1_bias, float *layer2_matrix, float *layer2_bias,
            int *result) {
-    float *layer1_output = new float[num_images * LAYER1];
-    float *layer2_output = new float[num_images * LAYER2];
+    float layer1_output[num_images * LAYER1];
+    float layer2_output[num_images * LAYER2];
 
-    // Layer1: Linear layer + Sigmoid (activation function)
+    #pragma acc data create(layer1_output[:num_images * LAYER1], layer2_output[:num_images * LAYER2])
     #pragma acc data copyin(training_images_flat[:num_images*LAYER0], layer1_matrix[:LAYER0*LAYER1], layer1_bias[:LAYER1])
-    #pragma acc data copyout(layer1_output[:num_images*LAYER1])
+    #pragma acc data copyin(layer2_matrix[:LAYER1*LAYER2], layer2_bias[:LAYER2])
+    #pragma acc data copyout(result[:num_images])
     {
+        // Layer1: Linear layer + Sigmoid (activation function)
         LinearLayer(training_images_flat, layer1_matrix, layer1_bias, layer1_output,
                     num_images, LAYER0, LAYER1);
         Sigmoid(layer1_output, num_images, LAYER1);
-    }
 
-    // Layer2: Linear layer + Argmax
-    #pragma acc data copyin(layer1_output[:num_images*LAYER1], layer2_matrix[:LAYER1*LAYER2], layer2_bias[:LAYER2], layer2_output[:num_images*LAYER2])
-    #pragma acc data copyout(result[:num_images])
-    {
+        // Layer2: Linear layer + Argmax
         LinearLayer(layer1_output, layer2_matrix, layer2_bias, layer2_output,
             num_images, LAYER1, LAYER2);
         Argmax(layer2_output, result, num_images, LAYER2);
     }
-
-    delete [] layer1_output;
-    delete [] layer2_output;
 }
 
 
