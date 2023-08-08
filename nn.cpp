@@ -40,8 +40,11 @@ using namespace std;
   *          (b) CUDA kernel function
   */
 void LinearLayer(float *A, float *B, float *C, float *D, int n, int k, int m) {
+
+    const int gangs = 512; // 執行組的數量
+    const int vectorSize = 64; // 向量長度
     #pragma acc data copyin(A[:n * k], B[:k * m], C[:m]) copyout(D[:n * m])
-    #pragma acc parallel loop collapse(2)
+    #pragma acc parallel num_gangs(gangs) vector_length(vectorSize) loop collapse(2)
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
             float sum = C[j];
